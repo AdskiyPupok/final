@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -17,7 +15,6 @@ const cookieParser = require("cookie-parser");
 
 connectToDatabase();
 
-
 app.use(
   cors,
   cookieParser(),
@@ -27,9 +24,5 @@ app.use(
   express.static(path.join(__dirname, "public"))
 );
 
-// Остальной код
-
-
-// Запуск приложения
 
 app.listen(PORT);
