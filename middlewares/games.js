@@ -19,6 +19,14 @@ const findAllGames = async (req, res, next) => {
   next();
 };
 
+const checkIsVoteRequest = async (req, res, next) => {
+  // Если в запросе присылают только поле users
+if (Object.keys(req.body).length === 1 && req.body.users) {
+  req.isVoteRequest = true;
+}
+next();
+};
+
 
 const createGame = async (req, res, next) => {
   console.log("POST /games");
@@ -74,15 +82,9 @@ const deleteGame = async (req, res, next) => {
 };
 
 const checkEmptyFields = async (req, res, next) => {
-  if (
-    !req.body.title ||
-    !req.body.description ||
-    !req.body.image ||
-    !req.body.link ||
-    !req.body.developer
-  ) {
-    res.setHeader("Content-Type", "application/json");
-        res.status(400).send(JSON.stringify({ message: "Заполни все поля" }));
+  if(req.isVoteRequest) {
+    next();
+    return;
   } else {
     next();
   }
@@ -92,10 +94,10 @@ const checkEmptyFields = async (req, res, next) => {
 
 const checkIfCategoriesAvaliable = async (req, res, next) => {
   // Проверяем наличие жанра у игры
-if (!req.body.categories || req.body.categories.length === 0) {
-  res.setHeader("Content-Type", "application/json");
-      res.status(400).send(JSON.stringify({ message: "Выбери хотя бы одну категорию" }));
-} else {
+  if(req.isVoteRequest) {
+    next();
+    return;
+  } else {
   next();
 }
 };
@@ -133,13 +135,6 @@ const checkIsGameExists = async (req, res, next) => {
   }
 };
 
-const checkIsVoteRequest = async (req, res, next) => {
-  // Если в запросе присылают только поле users
-if (Object.keys(req.body).length === 1 && req.body.users) {
-  req.isVoteRequest = true;
-}
-next();
-};
 
 // Экспортируем функцию поиска всех игр
 module.exports = {
